@@ -75,7 +75,8 @@ streamlit run streamlit_app.py
 3. (선택) Slack 전송을 쓰려면 **Advanced settings → Secrets**에 `.streamlit/secrets.toml.example`의 형식으로 `SLACK_WEBHOOK_URL`을 입력합니다.
 
 **주의**
-* `torch` + `sentence-transformers`는 메모리를 많이 사용합니다. 무료 플랜의 메모리 제한에 걸릴 수 있으니 배포 후 앱이 정상 기동하는지 확인하세요. 부족하면 로컬 실행 또는 더 큰 메모리를 제공하는 호스팅을 사용하세요.
+* `sentence-transformers`(내부적으로 torch 사용)는 설치 시간이 길고 메모리를 많이 사용합니다. 첫 배포는 수 분이 걸릴 수 있고, 무료 플랜의 메모리 제한에 걸리면 앱이 재시작될 수 있으니 배포 후 기동 여부를 확인하세요. 부족하면 로컬 실행 또는 더 큰 메모리의 호스팅을 사용하세요.
+* 처음 실행할 때 MiniLM 모델(`all-MiniLM-L6-v2`)을 인터넷에서 내려받습니다.
 * **Slack Webhook URL을 코드나 저장소에 넣지 마세요.** 환경변수 `SLACK_WEBHOOK_URL` 또는 `.streamlit/secrets.toml`(`.gitignore` 처리됨)로만 설정합니다. 설정하지 않으면 전송 버튼을 눌러도 안내 메시지만 표시됩니다.
 * 이 대시보드는 사용자별 영구 저장 없이 **세션 단위**로 동작하며, 외부 접속자도 같은 앱을 사용하므로 개인정보나 비공개 품질 데이터를 입력하지 마세요.
 
