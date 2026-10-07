@@ -1,0 +1,552 @@
+{
+  "status": "PASS",
+  "runtime_paths": {
+    "review": "pipeline/day17_qa_review_enrichment.py",
+    "core": "pipeline/day17_qa_integration.py",
+    "classification": "classification/day16_classification_confidence_module.py",
+    "retrieval": "retrieval/day16_retrieval_module.py"
+  },
+  "selection": {
+    "source": "out/day15_final_v3_confidence_revalidation/confidence_predictions.csv",
+    "split": "VALIDATION",
+    "random_seed": 42,
+    "method": "Within each confidence level, sort Event IDs ascending as strings and draw one zero-based row index sequentially with numpy.default_rng(42).",
+    "thresholds": {
+      "low": 0.3,
+      "high": 0.6
+    },
+    "details": [
+      {
+        "confidence_level": "HIGH",
+        "pool_size": 178,
+        "sort": "_event_key ascending as string",
+        "selected_zero_based_index": 15,
+        "query_event_id": "92243",
+        "stored_confidence": 0.7152566137947075
+      },
+      {
+        "confidence_level": "MEDIUM",
+        "pool_size": 995,
+        "sort": "_event_key ascending as string",
+        "selected_zero_based_index": 770,
+        "query_event_id": "95224",
+        "stored_confidence": 0.3261953633272079
+      },
+      {
+        "confidence_level": "LOW",
+        "pool_size": 165,
+        "sort": "_event_key ascending as string",
+        "selected_zero_based_index": 108,
+        "query_event_id": "94833",
+        "stored_confidence": 0.2750840967748137
+      }
+    ]
+  },
+  "selected_validation_event_ids": [
+    "92243",
+    "95224",
+    "94833"
+  ],
+  "global_checks": {
+    "prior_day17_validations_pass": true,
+    "three_actual_validation_cases_selected": true,
+    "actual_high_medium_low_all_present": true,
+    "all_actual_case_checks_pass": true,
+    "missing_date_behavior_pass": true,
+    "all_actual_outputs_json_safe": true,
+    "test_data_not_used": true
+  },
+  "cases": [
+    {
+      "expected_confidence_level": "HIGH",
+      "query_event_id": "92243",
+      "true_root_cause": "자재/부품",
+      "query_date": "2023-05-05",
+      "stored_top1": "소프트웨어",
+      "stored_confidence": 0.7152566137947075,
+      "actual_top1": "소프트웨어",
+      "actual_confidence": 0.7152566137947075,
+      "actual_confidence_level": "HIGH",
+      "top3_candidates": [
+        {
+          "rank": 1,
+          "root_cause": "소프트웨어",
+          "probability": 0.7152566137947075
+        },
+        {
+          "rank": 2,
+          "root_cause": "설계",
+          "probability": 0.18726957167875674
+        },
+        {
+          "rank": 3,
+          "root_cause": "포장/라벨링",
+          "probability": 0.028719015783493583
+        }
+      ],
+      "retrieval_top3": [
+        {
+          "rank": 1,
+          "retrieved_event_id": "84337",
+          "similarity": 0.6348172426223755,
+          "retrieved_reason": "The G6 bellavista 1000 US ventilators may experience intermittent failures: Lack of acoustic high priority alarm, presence of a 'no alarm' condition, or presence of non-responsive touch screen.",
+          "retrieved_root_cause": "소프트웨어",
+          "recall_action": "Consignees were sent an Urgent Medical Device Recall letter beginning 11/25/2019 via overnight delivery. The letter identified affected devices, provided a description of the issue, and provided actions to be taken by distributors and end-users. A response form was asked to be returned. Questions can be directed to Vyaire's Technical Support Department at support.vent.us@vyaire.com.",
+          "specialty": "Anesthesiology",
+          "product_code": "CBK",
+          "device_class": "2",
+          "firm": "VYAIRE MEDICAL",
+          "retrieved_date": "2019-11-25"
+        },
+        {
+          "rank": 2,
+          "retrieved_event_id": "80671",
+          "similarity": 0.5394845008850098,
+          "retrieved_reason": "The firm received a complaint where, during patient positioning, the technologist was adjusting the patient table height and the table failed to stop when the control was released and contacted the CT gantry. The problem could not be duplicated at the site, so to avoid further issues while a root cause investigation was pursued, Hitachi choose to add an optional touch sensor to the gantry to add a redundant level of protection. It is conceivable that a patient s extremity may be caught between the tabletop and the gantry surface during uncontrolled motion or that the table contact of the gantry might cause internal damage to the unit.",
+          "retrieved_root_cause": "자재/부품",
+          "recall_action": "On 6/19/18, the firm was notified of the problem at a customer site. The firm is currently investigating the underlying cause to formulate a planned corrective action. On 6/29/18, the firm took a preventive measure at the site which originated the complaint: Hitachi added an optional touch sensor to the unit to lessen the chance of injury. The firm may take additional corrective action on other units distributed to customers once root cause investigation is complete.",
+          "specialty": "Radiology",
+          "product_code": "JAK",
+          "device_class": "2",
+          "firm": "HITACHI MEDICAL SYSTEMS AMERICA INC",
+          "retrieved_date": "2018-06-29"
+        },
+        {
+          "rank": 3,
+          "retrieved_event_id": "64070",
+          "similarity": 0.5290884971618652,
+          "retrieved_reason": "VS2+ screen may lock up and stop monitoring during patient use",
+          "retrieved_root_cause": "소프트웨어",
+          "recall_action": "Philips issued an Urgent Medical Device Correction letter on January 14, 2013. The field action will take place in two phases: Phase 1 Philips sent customer an Urgent Medical Device Correction Notification/Field Safety Notice. This notification explains the issues and gives the customers instructions on actions to take while they await the hardware correction. Phase 2 Once the hardware correction Philips will contact customers and perform the correction free of charge. Until the correction is available. Affected products may continue to be used while waiting for the correction from Philips if the unit is not used in NBP interval mode. A Philips Healthcare representative will contact you to arrange for the correction of all affected devices. If you need any further information or support concerning this issue, please contact the Philips Customer Care Center at 1-800-722-9377. On 3/14/13, firm stated Initially the fix would be a hardware upgrade but have since changed that to a software update. Customers within the US will be sent a new Field Safety Notice as well as a USB software update package and will be required to notify us upon the upgrade of their affected units. They will be performing the updates themselves",
+          "specialty": "Cardiovascular",
+          "product_code": "DXN",
+          "device_class": "2",
+          "firm": "PHILIPS HEALTHCARE INC",
+          "retrieved_date": "2013-01-14"
+        }
+      ],
+      "retrieval_rank4_5": [
+        {
+          "rank": 4,
+          "retrieved_event_id": "89109",
+          "similarity": 0.5230280160903931,
+          "retrieved_reason": "Issue was identified during internal engineering evaluation. Use of the system with the affected software version may experience either an inability to deliver energy or an inadvertent delivery of energy. Use may require surgeon to resolve an injury or need moderate intraoperative intervention. Also, use may potentially cause user frustration or a minor delay to troubleshoot.",
+          "retrieved_root_cause": "소프트웨어",
+          "recall_action": "On 09/22/2021, the firm notified affected customers via mail of \"Urgent Medical Device Correction - ISIFA2021-04-C.\" The letter indicated, \"As part of the field action process, please complete the actions below: 1. Ensure that all personnel who use the da Vinci SP System read and understand the contents of this letter. 2. Inform the personnel when the software update has been completed by the Intuitive representative. 3. Complete the attached Acknowledgement Form and return it via fax or email to Intuitive as instructed on the form. 4. Retain a copy of this letter and the acknowledgement form for your files. 5. Contact Technical Support at the number listed below for assistance if you have experienced this issue: US Technical Support: 800-876-1310, Option 1 (24/7) An Intuitive representative will schedule a site visit to install the next available software update. If you require further information or support concerning this Medical Device Notification, please contact your Clinical Sales Representative or contact Intuitive Customer Service at the numbers listed below: -US Customer Service (800) 876-1310, Option 3 (7 AM to 5 PM EST) or Customerservice@intusurg.com.\"",
+          "specialty": "Gastroenterology, Urology",
+          "product_code": "NAY",
+          "device_class": "2",
+          "firm": "INTUITIVE SURGICAL INC",
+          "retrieved_date": "2021-09-22"
+        },
+        {
+          "rank": 5,
+          "retrieved_event_id": "71101",
+          "similarity": 0.5226283669471741,
+          "retrieved_reason": "Software bugs in VC20B SP0a or SP1 software versions may cause issues that could make it necessary to rescan patients. Syngo Main UI may crash if the Patient Browser is scrolled with arrow keys of the keyboard. Tomo images may freeze on the screen when zoomed in or out under the mode of CAREVision. Sporadic displaying error in WorkStream4D application. DB may lock under heavy and multitasks.",
+          "retrieved_root_cause": "소프트웨어",
+          "recall_action": "Siemens sent an Customer Safety Advisory Notice dated April 20, 2015, to all affected customers. The letter identified the product the problem and the action needed to be taken by the customer. A remote software update is scheduled for release that will resolve the issue. For further questions, please call (610) 219-6300.",
+          "specialty": "Radiology",
+          "product_code": "JAK",
+          "device_class": "2",
+          "firm": "SIEMENS MEDICAL SOLUTIONS USA INC",
+          "retrieved_date": "2015-04-20"
+        }
+      ],
+      "input_quality": {
+        "word_count": 118,
+        "short_input": false,
+        "placeholder_detected": false,
+        "warnings": [],
+        "heuristic_policy_status": "PROVISIONAL",
+        "analysis_blocked_by_heuristic": false
+      },
+      "qa_checklist": {
+        "root_cause": "소프트웨어",
+        "items": [
+          "SW 버전 및 변경 이력 확인",
+          "Validation/검증 테스트 기록 확인",
+          "펌웨어/소프트웨어 배포 이력 확인"
+        ],
+        "status": "DOMAIN_REVIEW_PENDING",
+        "source": "Day16/qa_checklist.py",
+        "excluded_model_specific_source_item_count": 0
+      },
+      "ai_limitation_flags": {
+        "low_confidence": false,
+        "human_factor_case": false
+      },
+      "warnings": [],
+      "future_violations": 0,
+      "self_matches": 0,
+      "non_train_results": 0,
+      "checks": {
+        "validation_membership": true,
+        "stored_level_matches_current_model": true,
+        "stored_prediction_matches_current_model": true,
+        "stored_confidence_matches_current_model": true,
+        "classification_matches_core": true,
+        "retrieval_matches_core": true,
+        "top3_preserved": true,
+        "retrieval_top3_preserved": true,
+        "retrieval_rank4_5_preserved": true,
+        "recall_actions_preserved": true,
+        "date_filter_applied": true,
+        "future_recall_search_0": true,
+        "same_event_search_0": true,
+        "all_retrieved_events_are_train": true,
+        "checklist_matches_top1": true,
+        "checklist_domain_review_pending": true,
+        "historical_f1_note_not_exposed": true,
+        "low_warning_matches_actual_level": true,
+        "human_warning_matches_actual_top1": true,
+        "normal_is_not_auto_approval": true,
+        "json_safe": true
+      }
+    },
+    {
+      "expected_confidence_level": "MEDIUM",
+      "query_event_id": "95224",
+      "true_root_cause": "공정/변경관리",
+      "query_date": "2024-07-23",
+      "stored_top1": "포장/라벨링",
+      "stored_confidence": 0.3261953633272079,
+      "actual_top1": "포장/라벨링",
+      "actual_confidence": 0.32619536332720794,
+      "actual_confidence_level": "MEDIUM",
+      "top3_candidates": [
+        {
+          "rank": 1,
+          "root_cause": "포장/라벨링",
+          "probability": 0.32619536332720794
+        },
+        {
+          "rank": 2,
+          "root_cause": "인적요인",
+          "probability": 0.26011964776636426
+        },
+        {
+          "rank": 3,
+          "root_cause": "공정/변경관리",
+          "probability": 0.2305846231948345
+        }
+      ],
+      "retrieval_top3": [
+        {
+          "rank": 1,
+          "retrieved_event_id": "84732",
+          "similarity": 0.5872907638549805,
+          "retrieved_reason": "Perfusion tubing pack was packaged with the incorrect cuvette.",
+          "retrieved_root_cause": "인적요인",
+          "recall_action": "On 07/03/2019, the firm contact it customers in person and on 07/08/2019 sent a \"MEDICAL DEVICE CORRECTION\" Letter informing them of the incorrect cuvette was assembled into Perfusion Pack 046008200 (Lot Number 1912100141) and instructed the customers to: 1. Please check their inventory for PTS pack 046008200, with lot number 1912100141 delivered to their facility; 2. Using the attached Customer Response Form (Attachment 1), please respond by email to USFSN@livanova.com to confirm that they have affected products in their facility; 3. All PTS pack 046008200 with lot number 1912100141 should not be used and should be returned. The Recalling Firm will be contacting its customers to organize the replacement of the affected products. 4. Ensure that this Medical Device Correction is communicated to all personnel within their organization who need to be aware of it. If the customer has transferred any of the affected devices to a third party, please communicate this information to them and inform the LivaNova Quality Assurance Team at USFSN@livanova.com. For questions regarding this Medical Device Correction, please contact us at (800) 986-4702 or by e-mail to USFSN@livanova.com.",
+          "specialty": "Cardiovascular",
+          "product_code": "DWE",
+          "device_class": "2",
+          "firm": "LIVANOVA USA INC",
+          "retrieved_date": "2019-07-03"
+        },
+        {
+          "rank": 2,
+          "retrieved_event_id": "65993",
+          "similarity": 0.584059476852417,
+          "retrieved_reason": "Reports were received of an incorrectly assembled Outlook Safety Infusion System Burette Set (Product Code 375038), and the investigation determined that one of the ULTRASITE injection sites and corresponding low pressure backcheck valve was assembled upside down.",
+          "retrieved_root_cause": "공정/변경관리",
+          "recall_action": "On August 4, 2013, a letter was sent to direct accounts asking them to check their inventory for the affected product. These customers were also instructed to notify their customers if the product was further distributed and to return all affected product and/or the product removal acknowledgement form.",
+          "specialty": "General Hospital",
+          "product_code": "FRN",
+          "device_class": "2",
+          "firm": "B. BRAUN MEDICAL INC",
+          "retrieved_date": "2013-08-05"
+        },
+        {
+          "rank": 3,
+          "retrieved_event_id": "74896",
+          "similarity": 0.5774354934692383,
+          "retrieved_reason": "Product was incorrectly packaged.",
+          "retrieved_root_cause": "공정/변경관리",
+          "recall_action": "An Urgent Medical Device Removal Notice is being sent to Customers August 12, 2016, notifying them of the packaging of OSSEOTITE Certain Implant (4x11.5mm) in T3 Implant boxes. This recall is specific to Lot No. 2016031461. The material shipped within the box was described as being correct ,but only the box it was shipped in was incorrect. Customers were notified that there are no immediate or long term health consequences. In the notification letter, customers are instructed to complete the Certificate of Acknowledgement, and to return it via email (postmarket@zimmerbiomet.com) if no product is on hand or to return the certificate with product by shipping materials to: Biomet 3i - Post-Market Returns. Replacement product will be sent to customers upon return. Customers were also advised to keep a copy of their Certificate of Acknowledgement. Further questions should be directed to 1-800 443-8166 between the hours of 8:00 AM and 6:00 PM, Monday thru Friday. For further questions, please call 1-800 342-5454.",
+          "specialty": "Dental",
+          "product_code": "DZE",
+          "device_class": "2",
+          "firm": "BIOMET 3I LLC",
+          "retrieved_date": "2016-08-08"
+        }
+      ],
+      "retrieval_rank4_5": [
+        {
+          "rank": 4,
+          "retrieved_event_id": "54562",
+          "similarity": 0.5762790441513062,
+          "retrieved_reason": "Packaging was mislabeled.",
+          "retrieved_root_cause": "포장/라벨링",
+          "recall_action": "InterVascular SAS issued a \"Recall Notification - Product Recall RC 020\" notification dated January 29, 2009 to the sole consignee. The consignee had previously been notified by phone and all affected product had been segregated. For further information, contact InterVascular SAS at +33 442 08 77 84.",
+          "specialty": "Cardiovascular",
+          "product_code": "DSY",
+          "device_class": "2",
+          "firm": "INTERVASCULAR S.A.S.",
+          "retrieved_date": "2009-12-09"
+        },
+        {
+          "rank": 5,
+          "retrieved_event_id": "79077",
+          "similarity": 0.5699781179428101,
+          "retrieved_reason": "The infusion sets were manufactured with an incorrect spin collar.",
+          "retrieved_root_cause": "공정/변경관리",
+          "recall_action": "The firm, ICU Medical Inc., sent an \"URGENT: Medical Device Recall Notification\" letter dated 2/5/2018 to its customers via UPS on 2/5/2018 in the U.S. The letter described the product, problem and actions to be taken. The customers were instructed to: inspect your inventory for specific product and lot numbers; quarantine all affected devices; complete and return the Recall Response Form as applicable (even if you have no affected devices) via Fax to: 1-866-899-7474 or email to: ICUMedical2805@stericycle.com; if you have distributed the product further, notify your accounts that received the product and ask them to contact Stericycle at 1-866-629-6182 (M-F, 8am-5pm ET) to receive a Response Form. Return affected product to Stericycle using labels provided, if you have not received a return label or reply form or require additional assistance, please contact Stericycle at 1-866-629-6182 (M-F, 8am-5pm) the return labels are for single use only. For additional labels visit http://expertezlabel.com. For further inquiries, please contact ICU Medical Inc. for Global Complaint Management at ProductComplaintsPP@icumed.com or ICU Customer Service at 1-866-829-9025, option 2 (M-F, 8:30am-4pm PT).",
+          "specialty": "General Hospital",
+          "product_code": "FMG",
+          "device_class": "2",
+          "firm": "ICU MEDICAL INC",
+          "retrieved_date": "2018-02-05"
+        }
+      ],
+      "input_quality": {
+        "word_count": 15,
+        "short_input": false,
+        "placeholder_detected": false,
+        "warnings": [],
+        "heuristic_policy_status": "PROVISIONAL",
+        "analysis_blocked_by_heuristic": false
+      },
+      "qa_checklist": {
+        "root_cause": "포장/라벨링",
+        "items": [
+          "라벨 내용 및 표시사항 확인",
+          "포장 공정 기록 확인",
+          "라벨링 검수 절차 준수 여부 확인"
+        ],
+        "status": "DOMAIN_REVIEW_PENDING",
+        "source": "Day16/qa_checklist.py",
+        "excluded_model_specific_source_item_count": 0
+      },
+      "ai_limitation_flags": {
+        "low_confidence": false,
+        "human_factor_case": false
+      },
+      "warnings": [],
+      "future_violations": 0,
+      "self_matches": 0,
+      "non_train_results": 0,
+      "checks": {
+        "validation_membership": true,
+        "stored_level_matches_current_model": true,
+        "stored_prediction_matches_current_model": true,
+        "stored_confidence_matches_current_model": true,
+        "classification_matches_core": true,
+        "retrieval_matches_core": true,
+        "top3_preserved": true,
+        "retrieval_top3_preserved": true,
+        "retrieval_rank4_5_preserved": true,
+        "recall_actions_preserved": true,
+        "date_filter_applied": true,
+        "future_recall_search_0": true,
+        "same_event_search_0": true,
+        "all_retrieved_events_are_train": true,
+        "checklist_matches_top1": true,
+        "checklist_domain_review_pending": true,
+        "historical_f1_note_not_exposed": true,
+        "low_warning_matches_actual_level": true,
+        "human_warning_matches_actual_top1": true,
+        "normal_is_not_auto_approval": true,
+        "json_safe": true
+      }
+    },
+    {
+      "expected_confidence_level": "LOW",
+      "query_event_id": "94833",
+      "true_root_cause": "공정/변경관리",
+      "query_date": "2024-05-31",
+      "stored_top1": "인적요인",
+      "stored_confidence": 0.2750840967748137,
+      "actual_top1": "인적요인",
+      "actual_confidence": 0.2750840967748137,
+      "actual_confidence_level": "LOW",
+      "top3_candidates": [
+        {
+          "rank": 1,
+          "root_cause": "인적요인",
+          "probability": 0.2750840967748137
+        },
+        {
+          "rank": 2,
+          "root_cause": "자재/부품",
+          "probability": 0.26555998804452613
+        },
+        {
+          "rank": 3,
+          "root_cause": "공정/변경관리",
+          "probability": 0.18959442600506532
+        }
+      ],
+      "retrieval_top3": [
+        {
+          "rank": 1,
+          "retrieved_event_id": "57515",
+          "similarity": 0.5319766402244568,
+          "retrieved_reason": "While the infusion pump was being serviced at the Baxter Service Center, it was inadvertently routed to the packaging area before the final inspection.",
+          "retrieved_root_cause": "인적요인",
+          "recall_action": "Baxter telephoned the one customer on December 1, 2010, informing them that that an outgoing Quality Control Evaluation was not performed on their Colleague pump serial number 15030799CC during the last service. Since this was not conducted on this pump, the device may not function as designed and could lead to an interruption of therapy. Baxter requested that they locate the pump and remove it from use as soon as possible. Baxter will then send a shipping container for retrieval, reinspection and return of the device back to the customer at no cost. For questions regarding this recall call (800) 437-5176.",
+          "specialty": "General Hospital",
+          "product_code": "FRN",
+          "device_class": "2",
+          "firm": "BAXTER HEALTHCARE CORP",
+          "retrieved_date": "2010-12-01"
+        },
+        {
+          "rank": 2,
+          "retrieved_event_id": "53955",
+          "similarity": 0.5225450396537781,
+          "retrieved_reason": "System error 9 alarms. A System Error 9 alarm indicates a potential pressure loss in the pump cassette delivery chamber (chamber closest to the patient). This alarm is generated during the pumps initiation sequence and will not allow the set to be used. This requires a new set to be obtained, thus creating a potential for delay in therapy.|System error 9 alarms. A System Error 9 alarm indicates a potential pressure loss in the pump cassette delivery chamber (chamber closest to the patient). This alarm is generated during the pumps initiation sequence and will not allow the set to be utilized. This requires a new set to be obtained, thus creating a potential for delay in therapy.",
+          "retrieved_root_cause": "자재/부품",
+          "recall_action": "The recalling firm issued a Product Removal Notice via US Postal Service Certified Mail with registered return receipt or FedEx to all customers and distributors in receipt of the affected product. The notices were sent 11/30/09 and 12/1/09. Direct customers also received letters addressed to Material Management that informed them of the recall and provided instruction for disposition of affected product in their inventory. Distributors received the direct customer recall letter along with a cover letter outlining their responsibilities to execute the recall and notify their customers. Questions are directed to the company's Customer Support Departments: US customers please call (800) 227-2862. Canadian customers, please call (800) 624-2920. International customers, please call (610) 691-5400.",
+          "specialty": "General Hospital",
+          "product_code": "FPA",
+          "device_class": "2",
+          "firm": "B. BRAUN MEDICAL INC",
+          "retrieved_date": "2009-11-24"
+        },
+        {
+          "rank": 3,
+          "retrieved_event_id": "93876",
+          "similarity": 0.4975854158401489,
+          "retrieved_reason": "Retrospective reporting for the release of Technical Bulletin IMP-2643 AIC Version 8.5 Software Update Available. The update resolved an issue in version 8.4 where a pump was not recognized by the AIC.",
+          "retrieved_root_cause": "소프트웨어",
+          "recall_action": "This is a retrospective report for the March 2021 Technical Bulletin, which described a Product Update; specifically the AIC Version 8.5 Software Update. The software update began rollout on March 4, 2021. According to the firm, Version 8.5 of the software contained bug fixes for the issues seen in version 8.4. The technical bulletin was posted to HeartRecovery.com on March 5, 2021.",
+          "specialty": "Unknown",
+          "product_code": "OZD",
+          "device_class": "3",
+          "firm": "ABIOMED INC",
+          "retrieved_date": "2021-03-01"
+        }
+      ],
+      "retrieval_rank4_5": [
+        {
+          "rank": 4,
+          "retrieved_event_id": "57939",
+          "similarity": 0.4946015477180481,
+          "retrieved_reason": "Infusion pumps may exhibit false error codes which render the device inoperable until a recovery process is performed.",
+          "retrieved_root_cause": "소프트웨어",
+          "recall_action": "The firm, MOOG, sent an \"URGENT DEVICE RECALL NOTIFICATION\" letter dated February 28, 2011 to its customers. The letter described the product, problem and actions to be taken. The Customers were instructed to do the following: 1) Identify the affected Pumps: a) If they have an affected pump, fill out and return the enclosed Business Reply Card within five (5) working days. b) If their pump is not affected by this recall, the pump can be used for its intended purposes. 2) Removal of affected Product: a) remove affected products from service and use non-affected pump b) If you do not have an alternate pump available for use, MOOG recommended that they weigh the risks and benefits for delivering medications using the affected pump versus the risk of not using any pump for each patient WARNING: Affected pumps should not be used to deliver critical medications where a delay in therapy could result in serious adverse health effects, injury or death; and affected pumps should not be used with the neonatal population. 3)Should they Have an Affected pump which exhibits Error Code 45 or is used in therapeutic situations specified in the warning, please contact MOOG Customer Service at (800) 970-2337, Monday thru Friday, 7:00am to 5:00pm MST to arrange for a loaner pump and the return of your affected pump. If you have any additional questions regarding this recall, please contact MOOG's Customers Service Department at (800) 970-2337.",
+          "specialty": "General Hospital",
+          "product_code": "FRN",
+          "device_class": "2",
+          "firm": "ZEVEX INTERNATIONAL INC",
+          "retrieved_date": "2011-02-28"
+        },
+        {
+          "rank": 5,
+          "retrieved_event_id": "85821",
+          "similarity": 0.4945138692855835,
+          "retrieved_reason": "Affected products failed a sterilization test.",
+          "retrieved_root_cause": "자재/부품",
+          "recall_action": "On August 8th Medtronic vervally communicated to the consignees to informed them about the situation and affected product. On August 20th they send a letter to the consignees stating that \"as a result of the immediate verbal communication, your Medtronic representative has already retrieved the affected product from your facility. This notification is for your awareness and Medtronic requests that you complete and return the attached Customer Confirmation Certificate to RS.CFQFCA@Medtronic.com.\"",
+          "specialty": "Cardiovascular",
+          "product_code": "DTZ",
+          "device_class": "2",
+          "firm": "MEDTRONIC PERFUSION SYSTEMS",
+          "retrieved_date": "2018-08-08"
+        }
+      ],
+      "input_quality": {
+        "word_count": 11,
+        "short_input": false,
+        "placeholder_detected": false,
+        "warnings": [],
+        "heuristic_policy_status": "PROVISIONAL",
+        "analysis_blocked_by_heuristic": false
+      },
+      "qa_checklist": {
+        "root_cause": "인적요인",
+        "items": [
+          "사용설명서(IFU) 명확성 확인",
+          "사용자 인터페이스(UI) 오조작 가능성 확인",
+          "작업자 교육/숙련도 기록 확인"
+        ],
+        "status": "DOMAIN_REVIEW_PENDING",
+        "source": "Day16/qa_checklist.py",
+        "excluded_model_specific_source_item_count": 1
+      },
+      "ai_limitation_flags": {
+        "low_confidence": true,
+        "human_factor_case": true
+      },
+      "warnings": [
+        "모델의 예측 확신도가 낮습니다. Root Cause 후보와 과거 Recall 근거를 함께 비교하고 추가 조사가 필요합니다.",
+        "인적요인은 현재 모델에서 예측 성능이 제한적인 클래스입니다. 다른 Root Cause 후보와 추가 조사 정보를 함께 확인해야 합니다."
+      ],
+      "future_violations": 0,
+      "self_matches": 0,
+      "non_train_results": 0,
+      "checks": {
+        "validation_membership": true,
+        "stored_level_matches_current_model": true,
+        "stored_prediction_matches_current_model": true,
+        "stored_confidence_matches_current_model": true,
+        "classification_matches_core": true,
+        "retrieval_matches_core": true,
+        "top3_preserved": true,
+        "retrieval_top3_preserved": true,
+        "retrieval_rank4_5_preserved": true,
+        "recall_actions_preserved": true,
+        "date_filter_applied": true,
+        "future_recall_search_0": true,
+        "same_event_search_0": true,
+        "all_retrieved_events_are_train": true,
+        "checklist_matches_top1": true,
+        "checklist_domain_review_pending": true,
+        "historical_f1_note_not_exposed": true,
+        "low_warning_matches_actual_level": true,
+        "human_warning_matches_actual_top1": true,
+        "normal_is_not_auto_approval": true,
+        "json_safe": true
+      }
+    }
+  ],
+  "missing_date_test": {
+    "query_event_id": "94833",
+    "confidence_level": "LOW",
+    "outer_query_date": null,
+    "retrieval_query_date": null,
+    "date_filter_applied": false,
+    "date_policy_note": "query_date was not provided, so no date filter was applied. The final operating policy for missing query dates is not yet decided by the team.",
+    "future_search_check_applied": false,
+    "json_safe": true,
+    "passed": true
+  },
+  "actual_human_factor_warning_validation": {
+    "status": "VERIFIED_ON_ACTUAL_SELECTED_CASE",
+    "event_ids": [
+      "94833"
+    ],
+    "day17_3_unit_test_retained": true
+  },
+  "json_serialization": {
+    "method": "json.dumps(..., ensure_ascii=False, allow_nan=False)",
+    "all_actual_outputs_pass": true
+  },
+  "existing_files_modified": false,
+  "model_retrained": false,
+  "vectorizers_refit": false,
+  "embeddings_regenerated": false,
+  "confidence_thresholds_changed": false,
+  "calibration_added": false,
+  "retrieval_policy_changed": false,
+  "test_data_used": false,
+  "unresolved": [
+    {
+      "item": "retrieval_without_query_date",
+      "status": "DECISION_NEEDED",
+      "note": "Whether production should allow retrieval without a query date remains undecided."
+    },
+    {
+      "item": "actual_model_human_factor_warning",
+      "status": "VERIFIED",
+      "note": "Observed on actual selected Events: ['94833']"
+    },
+    {
+      "item": "qa_checklist_domain_review",
+      "status": "DECISION_NEEDED",
+      "note": "Checklist wording remains DOMAIN_REVIEW_PENDING."
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+  "model_role": "CURRENT_EXECUTABLE_BASELINE",
+  "data_snapshot": "final_v3",
+  "confidence_type": "top1_probability",
+  "thresholds": {
+    "high": 0.6,
+    "low": 0.3,
+    "high_rule": ">= 0.6",
+    "medium_rule": "0.3 <= confidence < 0.6",
+    "low_rule": "< 0.3"
+  },
+  "validation_n": 1338,
+  "test_n": 1042,
+  "test_accuracy": 0.5047984644913628,
+  "test_top3_hit": 0.8992322456813819,
+  "test_mean_confidence": 0.45365694236416165,
+  "ece_10bin": 0.05223467406350345,
+  "ece_definition": "10 equal-width top-label confidence bins; weighted absolute accuracy-confidence gap",
+  "top_label_brier": 0.23242874981254738,
+  "top_label_brier_definition": "mean((top1_confidence - correct)^2)",
+  "multiclass_brier": 0.6288287287404228,
+  "multiclass_brier_definition": "mean(sum_k((p_k - y_k)^2))",
+  "confidence_ordering": "PASS",
+  "validation_ordering_pass": true,
+  "test_ordering_pass": true,
+  "segment_results": [
+    {
+      "split": "VALIDATION",
+      "confidence_level": "HIGH",
+      "n": 178,
+      "coverage": 0.13303437967115098,
+      "accuracy": 0.7415730337078652,
+      "mean_confidence": 0.7258048923708587,
+      "confidence_accuracy_gap": -0.015768141337006547,
+      "top3_hit_rate": 0.9157303370786517
+    },
+    {
+      "split": "VALIDATION",
+      "confidence_level": "MEDIUM",
+      "n": 995,
+      "coverage": 0.7436472346786248,
+      "accuracy": 0.46934673366834173,
+      "mean_confidence": 0.4173611162342975,
+      "confidence_accuracy_gap": -0.05198561743404423,
+      "top3_hit_rate": 0.8864321608040201
+    },
+    {
+      "split": "VALIDATION",
+      "confidence_level": "LOW",
+      "n": 165,
+      "coverage": 0.12331838565022421,
+      "accuracy": 0.4,
+      "mean_confidence": 0.2681520498386451,
+      "confidence_accuracy_gap": -0.13184795016135492,
+      "top3_hit_rate": 0.7757575757575758
+    },
+    {
+      "split": "TEST",
+      "confidence_level": "HIGH",
+      "n": 193,
+      "coverage": 0.1852207293666027,
+      "accuracy": 0.7616580310880829,
+      "mean_confidence": 0.7131855363043941,
+      "confidence_accuracy_gap": -0.04847249478368887,
+      "top3_hit_rate": 0.9533678756476683
+    },
+    {
+      "split": "TEST",
+      "confidence_level": "MEDIUM",
+      "n": 716,
+      "coverage": 0.6871401151631478,
+      "accuracy": 0.4720670391061452,
+      "mean_confidence": 0.4186127729026335,
+      "confidence_accuracy_gap": -0.053454266203511736,
+      "top3_hit_rate": 0.9078212290502793
+    },
+    {
+      "split": "TEST",
+      "confidence_level": "LOW",
+      "n": 133,
+      "coverage": 0.1276391554702495,
+      "accuracy": 0.3082706766917293,
+      "mean_confidence": 0.26570661683024654,
+      "confidence_accuracy_gap": -0.04256405986148276,
+      "top3_hit_rate": 0.7744360902255639
+    }
+  ],
+  "human_factor": [
+    {
+      "root_cause": "인적요인",
+      "confidence_level": "ALL",
+      "support": 27,
+      "n": 27,
+      "coverage": 1.0,
+      "mean_confidence": 0.41183114910915036,
+      "top1_accuracy": 0.07407407407407407,
+      "top3_hit_rate": 0.4444444444444444
+    },
+    {
+      "root_cause": "인적요인",
+      "confidence_level": "HIGH",
+      "support": 27,
+      "n": 4,
+      "coverage": 0.14814814814814814,
+      "mean_confidence": 0.6719387575568583,
+      "top1_accuracy": 0.0,
+      "top3_hit_rate": 0.25
+    },
+    {
+      "root_cause": "인적요인",
+      "confidence_level": "MEDIUM",
+      "support": 27,
+      "n": 16,
+      "coverage": 0.5925925925925926,
+      "mean_confidence": 0.41073158265889287,
+      "top1_accuracy": 0.0625,
+      "top3_hit_rate": 0.4375
+    },
+    {
+      "root_cause": "인적요인",
+      "confidence_level": "LOW",
+      "support": 27,
+      "n": 7,
+      "coverage": 0.25925925925925924,
+      "mean_confidence": 0.26571152473962006,
+      "top1_accuracy": 0.14285714285714285,
+      "top3_hit_rate": 0.5714285714285714
+    }
+  ],
+  "class_order": [
+    "공정/변경관리",
+    "규제/인허가",
+    "설계",
+    "소프트웨어",
+    "인적요인",
+    "자재/부품",
+    "포장/라벨링"
+  ],
+  "sanity_checks": {
+    "validation_n_1338": true,
+    "test_n_1042": true,
+    "event_id_duplicate_0": true,
+    "missing_probability_0": true,
+    "probability_row_sum_approx_1": true,
+    "confidence_equals_row_max": true,
+    "predicted_class_equals_argmax": true,
+    "classifier_classes_match_mapping": true,
+    "test_accuracy_matches_verified": true,
+    "test_top3_matches_verified": true,
+    "confidence_level_missing_0": true
+  },
+  "status": "PROVISIONAL_VALIDATED",
+  "model_retrained": false,
+  "threshold_tuned": false,
+  "calibration_model_fitted": false,
+  "test_based_policy_change": false,
+  "historical_synthetic_modified": false,
+  "historical_reference": {
+    "snapshot": "historical synthetic",
+    "high": {
+      "coverage": 0.118,
+      "accuracy": 0.79
+    },
+    "medium": {
+      "coverage": 0.65,
+      "accuracy": 0.506
+    },
+    "low": {
+      "coverage": 0.232,
+      "accuracy": 0.348
+    },
+    "ece": 0.094,
+    "comparison_rule": "Reference only; no direct better/worse comparison with final-v3."
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "version": "current-candidate-draft-1",
+  "model_role": "root_cause_7class_historical_selected_candidate",
+  "role": "HISTORICAL_SELECTED_CANDIDATE",
+  "experiment_evidence": {
+    "status": "AVAILABLE",
+    "sources": [
+      "260914 Root_Cause_모델_종합분석보고서",
+      "9개모델_비교실험"
+    ]
+  },
+  "runtime_artifact": "UNAVAILABLE",
+  "reproducibility": "UNRESOLVED",
+  "feature_type": "word_tfidf",
+  "classifier_family": "SGDClassifier",
+  "class_weight": "balanced",
+  "target": "root_cause_group",
+  "excluded_target_value": "미확정",
+  "synthetic_augmentation": {
+    "enabled_in_candidate_definition": true,
+    "target_class": "인적요인",
+    "dataset_artifact": "UNAVAILABLE",
+    "status": "CHECK_REQUIRED"
+  },
+  "expected_output": "top-k probabilities",
+  "top_k": 3,
+  "class_mapping": "artifacts/classification/class_mapping.json",
+  "data_snapshot": "HISTORICAL_SNAPSHOT_A",
+  "split": {
+    "train": 13944,
+    "validation": "CHECK_REQUIRED",
+    "test": "approximately 1050"
+  },
+  "artifact_status": "CURRENT_CANDIDATE",
+  "classifier_path": "UNAVAILABLE",
+  "vectorizer_path": "UNAVAILABLE",
+  "reported_historical_metrics": {
+    "macro_f1": 0.4499,
+    "top1": 0.503,
+    "top2": 0.765,
+    "top3": 0.887,
+    "human_factor_f1_original": 0.0333,
+    "human_factor_f1_synthetic": 0.0741,
+    "status": "AVAILABLE",
+    "note": "Reported in the two historical experiment reports; runtime artifacts are unavailable in the repository."
+  },
+  "final_source_of_truth": "out/event_features_integrated_v3.csv",
+  "final_revalidation_required": true,
+  "current_executable_baseline": {
+    "role": "CURRENT_EXECUTABLE_BASELINE",
+    "runtime_status": "AVAILABLE",
+    "model": "modeling/03_word_char_tfidf/artifacts/best_word_char_model.joblib",
+    "word_vectorizer": "modeling/03_word_char_tfidf/artifacts/word_tfidf_vectorizer.joblib",
+    "char_vectorizer": "modeling/03_word_char_tfidf/artifacts/char_tfidf_vectorizer.joblib",
+    "data_snapshot": "integrated_v3",
+    "final_v3": true,
+    "runtime_ready": true,
+    "test_rows": 1042,
+    "test_macro_f1": 0.44960807734802016,
+    "test_accuracy": 0.5047984644913628,
+    "test_top2_accuracy": 0.7696737044145874,
+    "status": "CURRENT_CANDIDATE",
+    "note": "Reproducible reference model, not the synthetic Word-only candidate and not FINAL."
+  },
+  "note": "The historical Synthetic candidate and final-v3 Word+Character executable baseline are different models on different snapshots. Their Macro F1 values must not be used for direct superiority claims."
+}

@@ -1,0 +1,21 @@
+{
+  "taxonomy": "7-class",
+  "classes": [
+    "공정/변경관리",
+    "규제/인허가",
+    "설계",
+    "소프트웨어",
+    "인적요인",
+    "자재/부품",
+    "포장/라벨링"
+  ],
+  "source": [
+    "modeling/01_sentence_embedding/artifacts/sentence_embedding_logistic_regression.joblib:classes_",
+    "modeling/02_hybrid_text/artifacts/best_hybrid_model.joblib:classes_",
+    "modeling/03_word_char_tfidf/artifacts/best_word_char_model.joblib:classes_",
+    "modeling/04_cost_sensitive/artifacts/best_cost_sensitive_model.joblib:classes_"
+  ],
+  "verified_models_agree": true,
+  "status": "FINAL",
+  "note": "저장소에서 확인한 4개 모델의 classes_ 순서는 동일하다. 향후 synthetic final classifier가 확정되면 해당 모델의 classes_와 다시 대조한다."
+}

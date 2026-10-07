@@ -1,0 +1,40 @@
+{
+  "version": "final-v3-revalidation-1",
+  "confidence_type": "top1_probability",
+  "high_threshold": 0.6,
+  "low_threshold": 0.3,
+  "high": ">= 0.6",
+  "medium": "0.3 <= confidence < 0.6",
+  "low": "< 0.3",
+  "selected_on": "validation",
+  "source_probability_artifact": "out/day15_final_v3_confidence_revalidation/confidence_predictions.csv",
+  "model_role": "CURRENT_EXECUTABLE_BASELINE",
+  "data_snapshot": "final_v3",
+  "validation": {
+    "n": 1338,
+    "HIGH": {"n": 178, "coverage": 0.13303437967115098, "accuracy": 0.7415730337078652},
+    "MEDIUM": {"n": 995, "coverage": 0.7436472346786248, "accuracy": 0.46934673366834173},
+    "LOW": {"n": 165, "coverage": 0.12331838565022421, "accuracy": 0.4}
+  },
+  "test": {
+    "n": 1042,
+    "HIGH": {"n": 193, "coverage": 0.1852207293666027, "accuracy": 0.7616580310880829},
+    "MEDIUM": {"n": 716, "coverage": 0.6871401151631478, "accuracy": 0.4720670391061452},
+    "LOW": {"n": 133, "coverage": 0.1276391554702495, "accuracy": 0.3082706766917293}
+  },
+  "calibration": {
+    "test_mean_confidence": 0.45365694236416165,
+    "test_accuracy": 0.5047984644913628,
+    "ece_10bin": 0.05223467406350345,
+    "top_label_brier": 0.23242874981254738,
+    "top_label_brier_definition": "mean((top1_confidence - correct)^2)",
+    "multiclass_brier": 0.6288287287404228,
+    "multiclass_brier_definition": "mean(sum_k((p_k - y_k)^2))"
+  },
+  "confidence_ordering": "PASS",
+  "status": "PROVISIONAL_VALIDATED",
+  "final_revalidation_required": false,
+  "operational_interpretation": "Use HIGH/MEDIUM/LOW as case-difficulty and QA-prioritization signals, not literal probabilities of correctness.",
+  "historical_reference_retained": true,
+  "note": "Thresholds were applied unchanged; no Test-based tuning or calibration fitting. This remains distinct from the Day13 top1-top2 margin experiment, its 0.2 exploratory threshold, and Q1 low-confidence definition."
+}

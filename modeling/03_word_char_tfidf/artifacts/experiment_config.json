@@ -1,0 +1,52 @@
+{
+  "data_file": "out/event_features_integrated_v3.csv",
+  "total_event_count": 22468,
+  "labeled_count": 16025,
+  "train_count": 13645,
+  "valid_count": 1338,
+  "test_count": 1042,
+  "text_column": "reason_lower (reason_for_recall_clean lowercased)",
+  "target": "root_cause_group",
+  "word_tfidf_settings": {
+    "ngram_range": [
+      1,
+      2
+    ],
+    "min_df": 3,
+    "max_features": 30000,
+    "sublinear_tf": true
+  },
+  "best_character_tfidf_settings": {
+    "analyzer": "char_wb",
+    "ngram_range": [
+      3,
+      6
+    ],
+    "min_df": 2,
+    "sublinear_tf": true
+  },
+  "best_char_weight": 1.0,
+  "sgd_settings": {
+    "loss": "log_loss",
+    "class_weight": "balanced",
+    "alpha": 0.0001,
+    "max_iter": 2000,
+    "random_state": 42
+  },
+  "test_macro_f1": {
+    "word": 0.44243077865173,
+    "character": 0.4465203610866438,
+    "word_character": 0.44960807734802016
+  },
+  "top2_accuracy": {
+    "word": 0.761996161228407,
+    "character": 0.7543186180422264,
+    "word_character": 0.7696737044145874
+  },
+  "bootstrap_macro_f1_diff_ci_95": [
+    -0.010716779761646813,
+    0.029033758201054465
+  ],
+  "mcnemar_p_value": 0.9161288770112904,
+  "random_state": 42
+}

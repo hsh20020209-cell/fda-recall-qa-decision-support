@@ -1,0 +1,19 @@
+# ---- FDA Recall QA Decision Support : 전체 추론(분류 + Confidence + 유사 Recall 검색) ----
+# Python 3.12 권장 (개발·검증: Python 3.12 / Streamlit 1.64.0)
+
+# CPU 전용 PyTorch (sentence-transformers 의존성). 용량이 큰 CUDA 빌드를 피한다.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch>=2.3
+
+streamlit==1.64.0
+pandas>=2.3.3
+numpy>=2.0
+scipy>=1.13
+# 저장된 분류 모델(joblib)이 scikit-learn 1.9.0 으로 저장되어 동일 버전으로 고정
+scikit-learn==1.9.0
+joblib>=1.4
+sentence-transformers>=3.0
+# Slack 전송(선택 기능)
+requests>=2.31
+
+# 분석 노트북(notebooks/) 실행용: pip install -r requirements-notebook.txt

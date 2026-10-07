@@ -1,0 +1,38 @@
+{
+  "version": "day14-semantic-retrieval-1",
+  "status": "CURRENT_CANDIDATE",
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "embedding_dimension": 384,
+  "normalize_embeddings": true,
+  "similarity": "cosine",
+  "corpus_role": "historical_train_only",
+  "corpus_data": "out/event_features_integrated_v3.csv",
+  "corpus_event_ids": "modeling/01_sentence_embedding/artifacts/train_event_ids.npy",
+  "train_embeddings": "modeling/01_sentence_embedding/artifacts/train_embeddings.npy",
+  "event_metadata_source": "out/event_features_integrated_v3.csv",
+  "data_snapshot": "integrated_v3",
+  "snapshot_verification": {
+    "train_rows": 13645,
+    "validation_rows": 1338,
+    "test_rows": 1042,
+    "embedding_event_id_alignment": true,
+    "status": "FINAL"
+  },
+  "date_leakage_rule": "retrieved_event_date < query_event_date",
+  "self_match_exclusion": true,
+  "default_k": 3,
+  "max_k": 5,
+  "structured_hard_filter": false,
+  "reranking": false,
+  "structured_fields": [
+    "specialty",
+    "product_code",
+    "device_class",
+    "firm"
+  ],
+  "production_hidden_fields": [
+    "manual_quality"
+  ],
+  "purpose": "QA evidence retrieval",
+  "note": "No standalone retrieval corpus file exists. Runtime corpus is the final Event CSV restricted to final Train event IDs. Similarity is not a QA usefulness score."
+}
