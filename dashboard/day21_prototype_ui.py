@@ -77,37 +77,27 @@ button[kind="primary"] {background:var(--qa-blue); border-color:var(--qa-blue); 
 .qa-field-row .qa-field-value {color:var(--qa-text); font-weight:550;}
 .qa-info-box {background:#F0F4FF; border-radius:8px; padding:10px 13px; font-size:12px; color:#526184; display:flex; gap:8px; align-items:flex-start; margin-top:6px;}
 .qa-info-box svg {width:15px; height:15px; flex-shrink:0; margin-top:1px; color:#4F6EF7;}
-/* 좌우 2열 섹션(시스템목적/워크플로우, 해석원칙/한계사항)의 칸 높이를 서로 맞춤.
-   flex 상속 방식이 두 번 다 적용 안 돼서(Streamlit 기본 스타일에 밀렸을 가능성),
-   !important로 강제 적용 + 혹시도 대비해 min-height도 같이 건다. */
-[data-testid="stHorizontalBlock"] {display:flex !important; align-items:stretch !important;}
-[data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {display:flex !important; flex-direction:column !important; height:auto !important;}
-[data-testid="stHorizontalBlock"] > [data-testid="stColumn"] > div {flex:1 1 auto !important; display:flex !important; flex-direction:column !important;}
-[data-testid="stHorizontalBlock"] [data-testid="stVerticalBlock"] {flex:1 1 auto !important; display:flex !important; flex-direction:column !important;}
-[data-testid="stHorizontalBlock"] [data-testid="stVerticalBlockBorderWrapper"] {flex:1 1 auto !important; display:flex !important; flex-direction:column !important;}
-.st-key-shell_intro_purpose, .st-key-shell_intro_workflow {
-  flex:1 1 auto !important; display:flex !important; flex-direction:column !important;
-  border:1px solid var(--qa-line); border-radius:10px; padding:20px 22px;
-  background:white; box-sizing:border-box; height:100% !important; min-height:640px;
-}
-.st-key-shell_intro_principles, .st-key-shell_intro_limits {
-  flex:1 1 auto !important; display:flex !important; flex-direction:column !important;
-  border:1px solid var(--qa-line); border-radius:10px; padding:20px 22px;
-  background:white; box-sizing:border-box; height:100% !important; min-height:380px;
-}
+/* 시스템 소개: Streamlit 컬럼 구조에 의존하지 않는 CSS grid.
+   같은 행의 두 패널은 grid의 stretch 로 항상 같은 높이가 되고, 고정 min-height 는 두지 않는다. */
+.qa-intro-grid {display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; align-items:stretch; margin:16px 0 0;}
+.qa-intro-panel {border:1px solid var(--qa-line); border-radius:10px; padding:20px 22px; background:white; box-sizing:border-box; min-width:0;}
+.qa-intro-panel.qa-spread {display:flex; flex-direction:column;}
+.qa-intro-panel.qa-spread .qa-panel-body {flex:1; display:flex; flex-direction:column; justify-content:space-between; gap:10px;}
+.qa-intro-panel .qa-panel-title {font-size:21px; font-weight:700; line-height:1.35; margin:0 0 8px; color:var(--qa-text);}
 .qa-intro-card {display:flex; gap:14px; align-items:flex-start; border:1px solid var(--qa-line); border-radius:10px; padding:20px; background:white; box-sizing:border-box;}
 .qa-intro-card .qa-intro-title {font-size:16px; font-weight:700; margin-bottom:6px; color:var(--qa-text);}
 .qa-intro-card .qa-intro-desc {font-size:13px; color:var(--qa-muted); line-height:1.55;}
-.qa-workflow-step {display:flex; gap:12px; align-items:flex-start; padding:8px 0;}
+.qa-workflow-step {display:flex; gap:12px; align-items:flex-start; padding:5px 0;}
+.qa-workflow-step p {margin:2px 0 0;}
 .qa-workflow-step .qa-step-number {flex-shrink:0;}
 .qa-workflow-step .qa-icon {width:38px; height:38px; flex-shrink:0;}
-.qa-workflow-arrow {text-align:center; color:#B9C0D1; font-size:13px; padding-left:15px;}
-.qa-principle-row {display:grid; grid-template-columns:34px 190px 1fr; gap:10px; align-items:start; padding:10px 0; border-bottom:1px solid var(--qa-line);}
+.qa-workflow-arrow {text-align:left; color:#B9C0D1; font-size:11px; line-height:8px; padding-left:11px; margin:0;}
+.qa-principle-row {display:grid; grid-template-columns:34px minmax(0,1fr); gap:12px; align-items:start; padding:11px 0; border-bottom:1px solid var(--qa-line);}
 .qa-principle-row:last-child {border-bottom:none;}
 .qa-principle-row .qa-icon-sm {width:34px; height:34px; border-radius:8px; background:#EEF1FF; color:var(--qa-blue); display:flex; align-items:center; justify-content:center;}
 .qa-principle-row .qa-icon-sm svg {width:17px; height:17px;}
-.qa-principle-row .qa-principle-title {font-size:14px; font-weight:650; color:var(--qa-text); padding-top:6px;}
-.qa-principle-row .qa-principle-desc {font-size:13px; color:#53617C; line-height:1.55; padding-top:6px;}
+.qa-principle-row .qa-principle-title {font-size:14px; font-weight:650; color:var(--qa-text); padding-top:5px;}
+.qa-principle-row .qa-principle-desc {font-size:13px; color:#53617C; line-height:1.55; padding-top:3px;}
 .qa-limit-row {display:flex; gap:11px; align-items:flex-start; padding:8px 0; font-size:13px; color:var(--qa-text); line-height:1.55;}
 .qa-limit-number {flex-shrink:0; width:24px; height:24px; border-radius:50%; background:#EEF1FF; color:var(--qa-blue); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:650;}
 .qa-subheader-icon {display:inline-flex; align-items:center; gap:8px; font-size:16px; font-weight:700; color:var(--qa-text); margin-bottom:4px;}
@@ -119,7 +109,7 @@ button[kind="primary"] {background:var(--qa-blue); border-color:var(--qa-blue); 
 .qa-tags {display:flex; gap:7px; flex-wrap:wrap; padding-top:8px;}
 .qa-tags span {background:#EEF1FF; border-radius:20px; color:#4963C9; padding:6px 11px; font-size:12px;}
 .st-key-shell_ai_reference {background:#F0F4FF!important;}
-@media(min-width:1051px) {.st-key-shell_intro_purpose,.st-key-shell_intro_workflow {min-height:450px;}}
+@media(max-width:1050px) {.qa-intro-grid {grid-template-columns:1fr;}}
 @media(max-width:1050px) {.qa-summary-grid {grid-template-columns:repeat(2,minmax(0,1fr));} .qa-detail-row {grid-template-columns:60px 100px 70px 1fr;} .qa-detail-row .qa-snippet {grid-column:1/-1;}}
 @media(max-width:700px) {[data-testid="stMainBlockContainer"] {padding:4.5rem 1rem 1rem;} .qa-summary-grid,.qa-summary-grid.three {grid-template-columns:1fr;} .qa-preview th:nth-child(2) {width:70px;} .qa-summary {min-height:90px;}}
 </style>
@@ -172,8 +162,12 @@ def notice(title, message):
     st.markdown(f'<div class="qa-notice"><strong>{html(title)}</strong>{html(message)}</div>', unsafe_allow_html=True)
 
 
+def steps_html(items):
+    return ''.join(f'<div class="qa-step"><span class="qa-step-number">{i}</span><div><strong>{html(title)}</strong><p>{html(description)}</p></div></div>' for i, (title, description) in enumerate(items, 1))
+
+
 def steps(items):
-    st.markdown(''.join(f'<div class="qa-step"><span class="qa-step-number">{i}</span><div><strong>{html(title)}</strong><p>{html(description)}</p></div></div>' for i, (title, description) in enumerate(items, 1)), unsafe_allow_html=True)
+    st.markdown(steps_html(items), unsafe_allow_html=True)
 
 
 def intro_cards(cards):
@@ -186,7 +180,11 @@ def intro_cards(cards):
     st.markdown(f'<div class="qa-summary-grid three">{markup}</div>', unsafe_allow_html=True)
 
 
-def workflow_steps(items):
+def notice_html(title, message):
+    return f'<div class="qa-notice"><strong>{html(title)}</strong>{html(message)}</div>'
+
+
+def workflow_html(items):
     """워크플로우: 번호 + 아이콘박스 + 제목/설명, 단계 사이에 ↓ 커넥터. items: (icon, title, description)"""
     parts = []
     for i, (sym, title, description) in enumerate(items, 1):
@@ -197,28 +195,58 @@ def workflow_steps(items):
         )
         if i < len(items):
             parts.append('<div class="qa-workflow-arrow">↓</div>')
-    st.markdown(''.join(parts), unsafe_allow_html=True)
+    return ''.join(parts)
+
+
+def workflow_steps(items):
+    st.markdown(workflow_html(items), unsafe_allow_html=True)
+
+
+def principle_html(items):
+    """해석 원칙: 아이콘 | (제목 / 설명). items: (icon, title, description)"""
+    return ''.join(
+        f'<div class="qa-principle-row"><div class="qa-icon-sm">{icon(sym)}</div>'
+        f'<div><div class="qa-principle-title">{html(title)}</div><div class="qa-principle-desc">{html(desc)}</div></div></div>'
+        for sym, title, desc in items
+    )
 
 
 def principle_rows(items):
-    """해석 원칙: 아이콘 + 제목(한 줄) + 설명(같은 행, 오른쪽). items: (icon, title, description)"""
-    st.markdown(''.join(
-        f'<div class="qa-principle-row"><div class="qa-icon-sm">{icon(sym)}</div>'
-        f'<div class="qa-principle-title">{html(title)}</div><div class="qa-principle-desc">{html(desc)}</div></div>'
-        for sym, title, desc in items
-    ), unsafe_allow_html=True)
+    st.markdown(principle_html(items), unsafe_allow_html=True)
+
+
+def limit_html(items):
+    return ''.join(f'<div class="qa-limit-row"><span class="qa-limit-number">{i}</span><span>{html(text)}</span></div>' for i, text in enumerate(items, 1))
 
 
 def limit_list(items):
     """Prototype 한계 사항: 번호 + 한 줄 설명(별도 제목 없음)."""
-    st.markdown(''.join(
-        f'<div class="qa-limit-row"><span class="qa-limit-number">{i}</span><span>{html(text)}</span></div>'
-        for i, text in enumerate(items, 1)
-    ), unsafe_allow_html=True)
+    st.markdown(limit_html(items), unsafe_allow_html=True)
+
+
+def subheader_icon_html(symbol, title, css_class=""):
+    return f'<div class="qa-subheader-icon {css_class}">{icon(symbol)}<span>{html(title)}</span></div>'
 
 
 def subheader_with_icon(symbol, title, css_class=""):
-    st.markdown(f'<div class="qa-subheader-icon {css_class}">{icon(symbol)}<span>{html(title)}</span></div>', unsafe_allow_html=True)
+    st.markdown(subheader_icon_html(symbol, title, css_class), unsafe_allow_html=True)
+
+
+def tags_html(labels):
+    return '<div class="qa-tags">' + ''.join(f'<span>{html(label)}</span>' for label in labels) + '</div>'
+
+
+def panel_html(title, body_html, title_icon=None, spread=False):
+    """spread=True: 패널이 더 높게 늘어날 때 본문 항목을 세로로 고르게 배치(빈 공간 완화)."""
+    head = subheader_icon_html(title_icon, title) if title_icon else f'<div class="qa-panel-title">{html(title)}</div>'
+    if spread:
+        return f'<div class="qa-intro-panel qa-spread">{head}<div class="qa-panel-body">{body_html}</div></div>'
+    return f'<div class="qa-intro-panel">{head}{body_html}</div>'
+
+
+def intro_row(left_panel_html, right_panel_html):
+    """같은 행의 두 패널을 하나의 grid 로 렌더링 → 두 패널의 높이가 항상 같다."""
+    st.markdown(f'<div class="qa-intro-grid">{left_panel_html}{right_panel_html}</div>', unsafe_allow_html=True)
 
 
 def retrieval_preview(retrieval, on_detail=None):

@@ -14,11 +14,14 @@ from dashboard import day21_prototype_adapter as adapter
 from dashboard import day21_prototype_ui as ui
 from dashboard import day21_prototype_workflow as workflow
 from dashboard import day22_slack_notify as slack  # [Slack 신규 추가] 팀원 설계 외 기능, 분리된 모듈
+from dashboard import day23_manual_review as manual_review  # [v2] Retrieval 수동 평가 요약 표시
 
 APP_STYLE = ui.APP_STYLE
 CHANGE_REASONS = ["Recall Reason에 추가 정보 존재", "핵심 문맥 해석 차이", "Root Cause taxonomy가 모호함",
                   "여러 원인이 동시에 존재", "QA 조사 결과와 차이", "기타"]
-TABS = ["Root Cause · Confidence", "과거 Recall", "QA 검토", "검증 정보"]
+APP_VERSION = "v2 · 튜터 피드백 반영"
+# [v2] 상세 탭을 3개 영역으로 압축: AI 분석 결과 / 과거 사례·근거 / QA 검토·판단
+TABS = ["AI 분석 결과", "과거 사례·근거", "QA 검토·판단"]
 
 
 @st.cache_resource(show_spinner=False)
@@ -77,7 +80,7 @@ def render_sidebar():
         st.markdown(f'<div class="qa-brand">{ui.icon("shield")}<span>QA Support</span></div>', unsafe_allow_html=True)
         page = st.radio("메뉴", ["Recall 분석", "QA 판단 이력", "시스템 소개"],
                         key="d21_navigation", label_visibility="collapsed", width="stretch")
-        st.markdown('<div class="qa-sidebar-foot">DESIGN PROTOTYPE<br>단일 사용자 · 로컬 세션</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="qa-sidebar-foot">DESIGN PROTOTYPE · {escape(APP_VERSION)}<br>단일 사용자 · 로컬 세션</div>', unsafe_allow_html=True)
     return page
 
 
@@ -301,7 +304,10 @@ def render_retrieval_tab(retrieval):
     for item in all_items:
         render_recall_card(item)
     with st.expander("검색 기준 · 해석 안내"):
-        st.caption("all-MiniLM-L6-v2 · cosine similarity · final-v3 Train corpus. Recall initiated date < 검색 기준일, 같은 날짜 및 입력한 동일 Event 제외. FDA 공개일이나 당시 실제 정보 이용 가능 날짜를 의미하지 않습니다. 과거 Action은 신규 이슈의 권장·확정 조치가 아닙니다.")
+        st.caption("all-MiniLM-L6-v2 · cosine similarity · final-v3 Train corpus. 과거 Action은 신규 이슈의 권장·확정 조치가 아닙니다.")
+        st.markdown("**개시일 기준 필터링 ≠ 정보 공개 시점 검증**")
+        st.caption("① 개시일 기준 필터링(적용·검증함): Recall initiated date < 검색 기준일, 같은 날짜 및 입력한 동일 Event 제외. 검증에서 미래 사례·자기 Event 검색은 0건이었습니다. "
+                   "② 실제 정보 공개 시점 검증(수행하지 않음): 개시일은 FDA 공개일이나 당시 담당자가 해당 정보를 실제로 볼 수 있었던 날짜와 다를 수 있으므로, 이 필터는 '그 시점에 열람 가능했던 정보'를 보장하지 않습니다.")
 
 
 def checklist_key(index):
@@ -341,46 +347,47 @@ def render_qa_review(review):
                     ("1 Case 정보", "2 AI Analysis", "3 Historical Evidence", "4 QA Review", "5 Final Decision", "6 Next Actions")) + '</div>', unsafe_allow_html=True)
 
 
-def render_model_validation_tab():
-    st.subheader("Confidence 검증 정보")
-    table = adapter.load_confidence_segment_table()
-    if table is None:
-        st.caption("모델 검증 자료 unavailable · 현재 참고 표를 표시할 수 없습니다.")
-    else:
-        st.dataframe(table, hide_index=True, width="stretch")
-    st.caption("final-v3 · 저장된 Validation 1,338건 / Test 1,042건 검증 결과 (읽기 전용)")
-    st.caption("Coverage는 평가 split에서 해당 구간에 포함된 비율이며 실제 QA workload를 직접 의미하지 않습니다. Accuracy는 해당 구간에서 Top-1이 실제 라벨과 일치한 비율이며 현재 입력이 맞을 확률이 아닙니다. Test는 프로젝트 중 반복 확인했으므로 untouched holdout이 아닙니다.")
-    st.subheader("Retrieval Manual Review")
-    directory = adapter.ROOT / "out/day19_retrieval_evaluation"
-    evidence = workflow.load_manual_review(directory)
-    if evidence is None:
-        st.caption("수동평가 자료 unavailable · 확인할 수 있는 평가 결과가 없습니다.")
-    else:
-        st.text(f"평가 준비: Query {evidence['queries']}건 / 검색 pair {evidence['pairs']}건")
-        st.text(f"사람 평가 기록: Query {sum(evidence['counts'].values())}건 / pair {evidence['pair_reviewed']}건 · Query 미완료 {evidence['pending']}건")
-        if sum(evidence['counts'].values()):
-            st.text(" · ".join(f"{k} {v}건" for k, v in evidence['counts'].items()))
+def render_confidence_validation():
+    """[v2] 세부 검증 정보는 상시 노출하지 않고 접이식으로 제공한다."""
+    with st.expander("Confidence 검증 정보 (Validation / Test)"):
+        table = adapter.load_confidence_segment_table()
+        if table is None:
+            st.caption("모델 검증 자료 unavailable · 현재 참고 표를 표시할 수 없습니다.")
         else:
-            st.caption("HUMAN_REVIEW_PENDING · 평가표 추출 완료와 사람 평가 완료는 다릅니다.")
-        if evidence['conflicts']:
-            st.warning(f"불일치/잘못된 Query 평가 {evidence['conflicts']}건: 집계에서 제외했습니다.")
-        st.caption("출처: out/day19_retrieval_evaluation/manual_evaluation_sheet.csv · 읽기 전용, 자동 판정 없음")
-    guide = directory / "evaluation_guide.md"
-    if guide.is_file():
-        with st.expander("수동평가 기준 · 원본 가이드"):
+            st.dataframe(table, hide_index=True, width="stretch")
+        st.caption("final-v3 · 저장된 Validation 1,338건 / Test 1,042건 검증 결과 (읽기 전용)")
+        st.caption("Coverage는 평가 split에서 해당 구간에 포함된 비율이며 실제 QA workload를 직접 의미하지 않습니다. Accuracy는 해당 구간에서 Top-1이 실제 라벨과 일치한 비율이며 현재 입력이 맞을 확률이 아닙니다. Test는 프로젝트 중 반복 확인했으므로 untouched holdout이 아닙니다.")
+        st.caption("Confidence는 보정된 정답 확률이 아니며 검토 우선순위 신호입니다. HIGH도 자동 승인 기준이 아닙니다.")
+
+
+def render_retrieval_manual_review():
+    """[v2] 유사 Recall 수동 평가(GOOD / PARTIAL / POOR)와 대표 성공·실패 사례."""
+    summary = manual_review.load_summary(adapter.ROOT)
+    evidence = workflow.load_manual_review(adapter.ROOT / "out/day19_retrieval_evaluation")
+    with st.expander(manual_review.summary_label(summary)):
+        manual_review.render(adapter.ROOT, evidence)
+        guide = adapter.ROOT / "out/day19_retrieval_evaluation/evaluation_guide.md"
+        if guide.is_file():
             st.text(guide.read_text(encoding="utf-8"))
 
 
 def save_qa_decision(result):
     c = result["classification"]
-    final = st.session_state["d21_final_root"]
+    final = st.session_state.get("d21_final_root")
     if not final:
-        st.warning("최종 Root Cause를 선택해 주세요.")
+        st.warning("최종 Root Cause를 직접 선택해 주세요. AI 참고 결과는 기본값이 아닙니다.")
         return
     changed = final != c["top1_root_cause"]
     reasons = st.session_state.get("d21_final_reasons", []) if changed else []
+    comment = (st.session_state.get("d21_final_comment") or "").strip()
     if changed and not reasons:
-        st.warning("AI 참고 결과와 다른 판단의 수정 사유를 선택해 주세요.")
+        st.warning("AI 참고 결과와 다른 판단의 이유를 선택해 주세요.")
+        return
+    if not changed and not st.session_state.get("d21_final_confirm"):
+        st.warning("AI 제안과 같은 원인을 선택했습니다. 근거를 직접 검토했음을 확인해 주세요.")
+        return
+    if len(comment) < 5:
+        st.warning("판단 근거를 간단히 기록해 주세요. AI와 같은 원인을 선택한 경우에도 필수입니다.")
         return
     items = (result["qa_review"].get("qa_checklist") or {}).get("items", [])
     row = {**{k: v for k, v in copy.deepcopy(st.session_state["d21_case"]).items() if k != "Recall Reason"},
@@ -388,7 +395,8 @@ def save_qa_decision(result):
            "AI Root Cause": c["top1_root_cause"], "AI Confidence": c["confidence_level"],
            "Top-1 score": c["top1_confidence"], "QA Final Root Cause": final,
            "동일/변경": "변경" if changed else "동일", "수정 사유": ", ".join(reasons),
-           "QA 의견": st.session_state.get("d21_final_comment", ""),
+           "AI 제안 명시 확인": "해당 없음(다른 원인 선택)" if changed else "확인함",
+           "QA 의견": comment,
            "Checklist 상태": json.dumps({item: bool(st.session_state.get(checklist_key(i), False))
                                           for i, item in enumerate(items)}, ensure_ascii=False)}
     st.session_state["d21_history"].append(row)
@@ -419,7 +427,7 @@ def render_post_decision():
             dl_col, slack_col = st.columns([1, 1])
             dl_col.download_button("요약 TXT 다운로드", report.encode("utf-8-sig"), "qa_summary.txt", "text/plain", width="stretch")
             # [Slack 신규 추가] 팀원 설계("외부 전송은 수행하지 않습니다")를 벗어나는 기능.
-            # Webhook URL은 코드에 두지 않고 환경변수로만 받는다.
+            # Webhook URL은 코드에 두지 않고 환경변수/Secrets 로만 받는다(README 참고).
             if slack_col.button("Slack으로 전송", key="d21_slack_send", width="stretch"):
                 st.session_state["d21_slack_confirm_open"] = True
             st.caption("⚠️ [신규 추가] 이 보고서를 Slack 채널로 전송합니다 — 외부 서비스로 데이터가 나갑니다 (팀원 기본 설계에는 없는 기능).")
@@ -438,8 +446,8 @@ def _render_slack_confirm_dialog():
     # [Slack 신규 추가] 요청하신 확인창 흐름: 경고 -> 확인 누르면 전송 후 창 닫힘
     st.warning("⚠️ 외부 채널 — 해당 데이터가 전송됩니다.")
     if st.button("확인", key="d21_slack_confirm_ok", type="primary"):
-        if not slack.SLACK_FIXED_WEBHOOK_URL:
-            st.session_state["d21_slack_result"] = (False, "Slack Webhook이 설정되지 않았습니다. 환경변수 SLACK_WEBHOOK_URL 을 확인하세요.")
+        if not slack.is_configured():
+            st.session_state["d21_slack_result"] = (False, "Slack Webhook이 설정되지 않았습니다. 환경변수 SLACK_WEBHOOK_URL 또는 .streamlit/secrets.toml 을 확인하세요 (README 참고).")
         else:
             report = workflow.build_report(st.session_state["d21_snapshot"])
             case_label = st.session_state["d21_case"].get("Recall Number") or "신규 입력"
@@ -463,9 +471,9 @@ def render_qa_final_decision(result):
             st.markdown("**Human QA 최종 판단**")
             if not result:
                 a, b = st.columns(2)
-                a.selectbox("최종 Root Cause", ["분석 결과 확인 후 선택"], disabled=True, key="empty_root")
-                b.multiselect("수정 사유", [], disabled=True, key="empty_reasons")
-                st.text_area("판단 근거 / 검토 의견", disabled=True, height=68, key="empty_comment",
+                a.selectbox("최종 Root Cause (직접 선택)", ["분석 결과 확인 후 선택"], disabled=True, key="empty_root")
+                b.multiselect("AI와 다른 이유", [], disabled=True, key="empty_reasons")
+                st.text_area("판단 근거 (필수)", disabled=True, height=68, key="empty_comment",
                              placeholder="분석 결과 확인 후 입력할 수 있습니다.")
                 with st.container(horizontal=True, horizontal_alignment="right"):
                     st.button("QA 판단 저장", disabled=True, key="empty_save")
@@ -478,12 +486,18 @@ def render_qa_final_decision(result):
                 st.error("7-class taxonomy 자료를 사용할 수 없어 QA 판단 입력을 표시하지 못합니다.")
                 return
             saved = st.session_state.get("d21_saved", False)
-            st.session_state.setdefault("d21_final_root", c["top1_root_cause"])
-            st.selectbox("최종 Root Cause", classes, index=None, key="d21_final_root", disabled=saved)
-            if st.session_state["d21_final_root"] != c["top1_root_cause"]:
-                st.multiselect("수정 사유", CHANGE_REASONS, key="d21_final_reasons", disabled=saved)
-            st.text_area("판단 근거 / 검토 의견", key="d21_final_comment", height=68, disabled=saved)
-            st.caption("QA가 직접 검토 후 저장합니다. 현재 세션 이력에만 기록됩니다.")
+            # [v2] AI Top-1을 기본값으로 넣지 않는다(자동화 편향 방지). QA가 직접 선택해야 한다.
+            st.selectbox("최종 Root Cause (직접 선택)", classes, index=None, key="d21_final_root", disabled=saved,
+                         placeholder="AI 참고 결과를 검토한 뒤 직접 선택하세요")
+            final = st.session_state.get("d21_final_root")
+            if final and final != c["top1_root_cause"]:
+                st.multiselect("AI와 다른 이유 (필수)", CHANGE_REASONS, key="d21_final_reasons", disabled=saved)
+            elif final:
+                st.checkbox("AI 제안(Top-1)과 같은 원인입니다. 근거를 직접 검토했고 동의함을 확인합니다. (필수)",
+                            key="d21_final_confirm", disabled=saved)
+            st.text_area("판단 근거 (필수)", key="d21_final_comment", height=68, disabled=saved or not final,
+                         placeholder="AI와 같은 원인을 선택한 경우에도 판단 근거를 간단히 기록합니다." if final else "최종 Root Cause를 선택하면 입력할 수 있습니다.")
+            st.caption("AI 제안을 채택하는 경우와 다른 원인을 선택하는 경우 모두 직접 확인과 근거 기록이 필요합니다. 기록은 현재 세션 이력에만 남으며 영구적인 감사 추적(Audit Trail)이 아닙니다.")
             with st.container(horizontal=True, horizontal_alignment="right"):
                 save_clicked = st.button("QA 판단 저장", key="d21_save", disabled=st.session_state.get("d21_saved", False), type="primary")
             if save_clicked:
@@ -531,12 +545,13 @@ def render_decision_history():
         title.subheader(f"QA 판단 이력 ({len(filtered)}건)")
         download.download_button("CSV 내보내기", export_csv(filtered) if filtered else b"", "qa_session_decisions.csv", "text/csv", disabled=not filtered)
         if filtered:
-            columns = ["시각", "Recall Number", "Device Name", "AI Root Cause", "AI Confidence", "QA Final Root Cause", "동일/변경", "수정 사유", "QA 의견"]
-            st.dataframe(pd.DataFrame(filtered)[columns], hide_index=True, width="stretch")
+            columns = ["시각", "Recall Number", "Device Name", "AI Root Cause", "AI Confidence", "QA Final Root Cause", "동일/변경", "AI 제안 명시 확인", "수정 사유", "QA 의견"]
+            frame = pd.DataFrame(filtered)
+            st.dataframe(frame[[col for col in columns if col in frame.columns]], hide_index=True, width="stretch")
             st.caption("AI 채택/수정은 AI 결과와 QA 판단의 동일/변경을 뜻하며 정답 여부가 아닙니다. CSV에는 원 점수와 체크리스트도 포함됩니다.")
         else:
             ui.empty("현재 세션에 저장된 QA 판단이 없습니다." if not rows else "필터에 맞는 QA 판단이 없습니다.")
-        ui.notice("현재 세션의 판단 기록", "영구 DB가 아닙니다. CSV를 내려받으면 사용자 파일로 남습니다. 동일·변경 여부는 QA 판단의 옳고 그름을 뜻하지 않습니다.")
+        ui.notice("현재 세션의 판단 기록", "이 이력은 현재 세션에만 유지되며 영구 DB나 감사 추적(Audit Trail) 시스템이 아닙니다. 사용자·변경 이력 관리, 위변조 방지 기능이 없습니다. CSV를 내려받으면 사용자 파일로 남습니다. 동일·변경 여부는 QA 판단의 옳고 그름을 뜻하지 않습니다.")
 
 
 def render_system_intro():
@@ -545,46 +560,41 @@ def render_system_intro():
         ("chart", "핵심 Workflow", "신규 품질이슈부터 최종 판단과 요약 보고까지 일관된 분석 프로세스 제공"),
         ("person", "Human QA Principle", "AI는 분석 근거를 제시하고, 최종 판단은 Human QA가 수행"),
     ])
-    left, right = st.columns(2)
-    with left, st.container(key="shell_intro_purpose"):
-        st.subheader("시스템 목적")
-        ui.notice("", "본 시스템은 FDA Recall 데이터를 기반으로, AI 분석 결과와 과거 사례 근거를 제공하여 Human QA의 효율적이고 일관된 의사결정을 지원하는 것을 목적으로 합니다.")
-        ui.steps([
-            ("초기 조사 지원", "신규 품질이슈에 대한 가능성 있는 Root Cause와 관련 근거를 신속히 제공합니다."),
-            ("과거 사례 기반 근거 제공", "유사한 FDA Recall 사례와 조치 이력을 통해 판단에 필요한 참고 정보를 제공합니다."),
-            ("일관된 QA 의사결정 지원", "AI 분석, 유사 사례, 체크리스트를 종합하여 Human QA의 최종 판단을 지원합니다."),
-        ])
-    with right, st.container(key="shell_intro_workflow"):
-        st.subheader("워크플로우 (Workflow)")
-        ui.workflow_steps([
+    # [v2] 같은 행의 두 패널을 하나의 CSS grid 로 렌더링해 높이를 항상 맞춘다.
+    ui.intro_row(
+        ui.panel_html("시스템 목적",
+                      ui.notice_html("", "본 시스템은 FDA Recall 데이터를 기반으로, AI 분석 결과와 과거 사례 근거를 제공하여 Human QA의 효율적이고 일관된 의사결정을 지원하는 것을 목적으로 합니다.")
+                      + ui.steps_html([
+                          ("초기 조사 지원", "신규 품질이슈에 대한 가능성 있는 Root Cause와 관련 근거를 신속히 제공합니다."),
+                          ("과거 사례 기반 근거 제공", "유사한 FDA Recall 사례와 조치 이력을 통해 판단에 필요한 참고 정보를 제공합니다."),
+                          ("일관된 QA 의사결정 지원", "AI 분석, 유사 사례, 체크리스트를 종합하여 Human QA의 최종 판단을 지원합니다."),
+                      ]), spread=True),
+        ui.panel_html("워크플로우 (Workflow)", ui.workflow_html([
             ("document", "신규 품질이슈 입력", "품질이슈에 대한 기본 정보(Recall Number, 사유, 검색 기준일 등)를 입력합니다."),
             ("list", "Root Cause Top-3 분석", "AI가 가능한 Root Cause 후보 Top-3를 제시합니다."),
             ("chart", "Confidence 제공", "각 Root Cause 후보에 대한 신뢰도(Confidence)를 제공합니다."),
             ("database", "과거 유사 Recall 검색", "각 후보와 유사한 과거 FDA Recall 사례를 검색하고 유사도를 제공합니다."),
             ("check", "QA 검토", "분석 결과와 유사 사례를 검토하고 추가 확인이 필요한 사항을 점검합니다."),
-            ("person", "Human QA 최종 판단", "모든 분석 결과와 근거를 바탕으로 Human QA가 최종 판단을 수행합니다."),
+            ("person", "Human QA 최종 판단", "모든 분석 결과와 근거를 바탕으로 Human QA가 직접 최종 판단을 수행하고 근거를 기록합니다."),
             ("document", "QA Summary / Next Action", "최종 판단 결과를 요약하고, 필요한 후속 조치 및 액션 아이템을 제안합니다."),
-        ])
-    left, right = st.columns(2)
-    with left, st.container(key="shell_intro_principles"):
-        st.subheader("해석 원칙")
-        ui.principle_rows([
-            ("chart", "Confidence (신뢰도)", "AI가 제시한 Root Cause 후보의 검토 우선순위를 위한 보조 신호입니다. 값이 높을수록 해당 원인을 우선 검토할 필요가 있음을 의미합니다."),
-            ("document", "Similarity (유사도)", "입력된 품질이슈와 과거 FDA Recall 사례 간의 유사도를 나타냅니다. 높은 유사도는 참고할 만한 근거가 될 수 있으나, 동일한 사례를 의미하지 않습니다."),
-            ("database", "Recall Action (과거 조치 이력)", "과거 FDA Recall에서 수행된 조치 내역으로, 현재 이슈에 대한 대응 방안을 검토하는 데 참고할 수 있습니다."),
+        ])),
+    )
+    ui.intro_row(
+        ui.panel_html("해석 원칙", ui.principle_html([
+            ("chart", "Confidence (신뢰도)", "AI가 제시한 Root Cause 후보의 검토 우선순위를 위한 보조 신호입니다. 보정된 정답 확률이 아니며 HIGH여도 자동 승인 기준이 아닙니다."),
+            ("document", "Similarity (유사도)", "입력된 품질이슈와 과거 FDA Recall 사례 간의 유사도를 나타냅니다. 높은 유사도는 참고할 만한 근거가 될 수 있으나, 동일한 원인이나 사례를 의미하지 않습니다."),
+            ("database", "Recall Action (과거 조치 이력)", "과거 FDA Recall에서 수행된 조치 내역으로, 현재 이슈의 권장·확정 조치가 아니라 대응 방안을 검토할 때의 참고 자료입니다."),
             ("person", "Human QA (최종 의사결정 주체)", "AI 분석 결과, 유사 사례, 체크리스트 등은 의사결정을 위한 참고 자료이며, 최종 판단과 조치는 반드시 Human QA가 수행합니다."),
-        ])
-    with right, st.container(key="shell_intro_limits"):
-        ui.subheader_with_icon("warning", "Prototype 한계 사항")
-        ui.limit_list([
+        ])),
+        ui.panel_html("Prototype 한계 사항", ui.limit_html([
             "본 시스템은 내부 검증을 위한 로컬 프로토타입입니다.",
-            "분석 이력 및 결과에 대한 영구 저장 기능은 지원되지 않습니다.",
+            "분석 이력 및 결과에 대한 영구 저장 기능은 지원되지 않으며, QA 판단 이력은 현재 세션에서만 유지됩니다(영구적인 감사 추적 Audit Trail이 아님).",
             "브라우저 및 서버 로그의 완전한 비저장은 보장되지 않습니다.",
-        ])
-        st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
-        ui.subheader_with_icon("layers", "프로젝트 Root Cause 7-class", css_class="layers")
-        st.markdown('<div class="qa-tags">' + ''.join(f'<span>{ui.html(label)}</span>' for label in
-                    ("설계", "소프트웨어", "공정/변경관리", "자재/부품", "포장/라벨링", "인적요인", "규제/인허가")) + '</div>', unsafe_allow_html=True)
+            "유사 Recall은 개시일 기준으로 필터링하며, 당시 정보가 실제로 공개되어 있었는지는 검증하지 않았습니다.",
+        ]) + '<div style="height:14px"></div>' + ui.subheader_icon_html("layers", "프로젝트 Root Cause 7-class", "layers")
+            + ui.tags_html(("설계", "소프트웨어", "공정/변경관리", "자재/부품", "포장/라벨링", "인적요인", "규제/인허가")), title_icon="warning"),
+    )
+    st.caption(f"{APP_VERSION} · v1(최초 설계)에서 정보구조 간소화, Human QA 판단 독립성, Retrieval 수동 평가 표시를 반영했습니다. 변경 내용은 CHANGELOG_v2.md 참고.")
 
 
 def show_recall_tab():
@@ -607,7 +617,7 @@ def main():
         render_summary_cards(result)
         with st.container(key="shell_tabs"):
             tabs = st.tabs(TABS, key="d21_tabs", on_change="rerun")
-            with tabs[0]:
+            with tabs[0]:  # AI 분석 결과
                 left, right = st.columns([44, 56], gap="medium")
                 with left:
                     render_root_cause_tab(result["classification"] if result else {}, result["qa_review"] if result else {}, result if result else {})
@@ -616,20 +626,19 @@ def main():
                     guidance_items = workflow.GUIDANCE.get(level, ["분석 후 Confidence에 따른 검토 안내를 표시합니다."])
                     guidance_html = "".join(f"<div>· {escape(item)}</div>" for item in guidance_items)
                     st.markdown(f'<div class="qa-notice"><strong>Review Guidance ({escape(level or "분석 전")})</strong>{guidance_html}</div>', unsafe_allow_html=True)
-                    # Keep the one-argument helper contract across Streamlit hot reloads.
-                    # Navigation belongs to the app, not the presentation helper.
+                    if result:
+                        n_items = result["retrieval"]["returned_n"] if result.get("retrieval") else 0
+                        st.caption(f"유사 Recall {n_items}건이 검색되었습니다. 사례와 근거는 ‘과거 사례·근거’ 탭에서 확인하세요.")
                     with st.container(horizontal=True, horizontal_alignment="right"):
-                        st.button("과거 Recall 상세 보기", key="d21_recall_jump",
-                                  on_click=show_recall_tab, type="tertiary")
-                    ui.retrieval_preview(result["retrieval"] if result else None)
-            with tabs[1]:
+                        st.button("과거 사례·근거 보기", key="d21_recall_jump", on_click=show_recall_tab, type="tertiary")
+                render_confidence_validation()
+            with tabs[1]:  # 과거 사례·근거
                 render_retrieval_tab(result["retrieval"] if result else None)
-            with tabs[2]:
+                render_retrieval_manual_review()
+            with tabs[2]:  # QA 검토·판단
                 render_qa_review(result["qa_review"] if result else {})
-            with tabs[3]:
-                render_model_validation_tab()
-        render_qa_final_decision(result)
-        render_post_decision()
+                render_qa_final_decision(result)
+                render_post_decision()
     elif page == "QA 판단 이력":
         render_decision_history()
     else:

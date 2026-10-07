@@ -63,6 +63,6 @@ def build_report(snapshot):
               "", "4. QA Review · DOMAIN_REVIEW_PENDING 참고 초안"]
     lines += [f"[{'확인' if checked else '미확인'}] {item}" for item, checked in json.loads(decision["Checklist 상태"]).items()]
     lines += ["추가 확인 필요사항: " + (snapshot["memo"] or "입력 없음"), "", "5. Final Decision"]
-    lines += [f"{k}: {decision[k] or '입력 없음'}" for k in ("시각", "QA Final Root Cause", "동일/변경", "수정 사유", "QA 의견")]
+    lines += [f"{k}: {decision[k] or '입력 없음'}" for k in ("시각", "QA Final Root Cause", "동일/변경", "AI 제안 명시 확인", "수정 사유", "QA 의견")]
     lines += ["", "6. Next Actions · 일반 참고 템플릿 (확정 조치/SOP 아님)"] + NEXT_ACTIONS
     return "\n".join(lines)

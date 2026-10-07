@@ -1,0 +1,23 @@
+{
+  "source": "Retrieval 수동검토 40건 문서 (프로젝트 노션) — 작성자 수동 평가 요약",
+  "notice": "작성자 1인의 수동 평가 요약이며 전문 QA 검증이 아닙니다. GOOD/PARTIAL/POOR 건수는 검색 정확도(%)가 아닙니다. 원본 평가표(CSV)는 이 패키지에 포함되어 있지 않습니다.",
+  "scope": "final-v3 Validation Query 40건 × 과거 Recall Top-5 = 200쌍. 검색 결과를 확인하기 전에 Query를 확정했고, 이전에 사용한 Query는 제외했으며 Test는 사용하지 않음. Confidence 구성: HIGH 10 · MEDIUM 15 · LOW 15.",
+  "query_quality": {"GOOD": 28, "PARTIAL": 7, "POOR": 5},
+  "low_confidence_queries": {"total": 15, "GOOD": 9, "PARTIAL": 4, "POOR": 2},
+  "logic_checks": {"미래 Recall 검색": 0, "입력 Event 자기 검색": 0, "Train 밖 검색": 0},
+  "criteria": [
+    "결함 현상이 실제로 비슷한가",
+    "제품·Specialty 맥락이 비교 가능한가",
+    "과거 Recall Action이 조사에 참고할 만한가",
+    "단어·표현만 겹친 것은 아닌가"
+  ],
+  "cases": [
+    {"kind": "성공", "case": "스텐트 전달 시스템 문제", "observation": "거의 같은 failure mode와 당시 조치까지 확인할 수 있었음", "implication": "유사 사례가 조사 범위를 좁히는 데 도움"},
+    {"kind": "성공", "case": "미신고 라텍스", "observation": "Specialty·Product Code가 달라도 같은 문제 유형의 사례가 검색됨", "implication": "제품군이 달라도 문제 유형이 같으면 참고 가능"},
+    {"kind": "성공", "case": "Event 94388 (Confidence LOW)", "observation": "1위가 아닌 Rank 4에서 같은 제품코드·같은 회사·같은 SSD 문제 사례가 검색됨", "implication": "Top-1만 보지 않고 Top-5를 확인하는 이유"},
+    {"kind": "부분 성공", "case": "Event 95066 (용접 누락)", "observation": "같은 결함 현상은 찾았지만 제품군이 달라 직접 비교에는 제한", "implication": "PARTIAL: 보조 참고 수준"},
+    {"kind": "실패·한계", "case": "Query 92874 (LCD 구리 테이프)", "observation": "Top-1 Similarity 0.7542로 높았지만 제품 맥락이 달라 POOR (WRONG_PRODUCT_CONTEXT)", "implication": "높은 유사도가 좋은 근거를 보장하지 않음"},
+    {"kind": "실패·한계", "case": "Event 92619 (\"Software issue\")", "observation": "Similarity 1.0이지만 문장이 너무 일반적이라 원인을 좁힐 정보가 없었음", "implication": "입력 정보가 부족하면 검색 근거도 약함"},
+    {"kind": "실패·한계", "case": "Event 92825 (burr)", "observation": "같은 단어(burr)여도 혈관 채취용 커터와 골절삭용 버가 섞임", "implication": "단어가 같아도 제품·용도 맥락을 함께 읽어야 함"}
+  ]
+}
