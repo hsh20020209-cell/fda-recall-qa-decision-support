@@ -80,7 +80,7 @@ def render_sidebar():
         st.markdown(f'<div class="qa-brand">{ui.icon("shield")}<span>QA Support</span></div>', unsafe_allow_html=True)
         page = st.radio("메뉴", ["Recall 분석", "QA 판단 이력", "시스템 소개"],
                         key="d21_navigation", label_visibility="collapsed", width="stretch")
-        st.markdown(f'<div class="qa-sidebar-foot">DESIGN PROTOTYPE · {escape(APP_VERSION)}<br>단일 사용자 · 로컬 세션</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="qa-sidebar-foot">단일 사용자 · 로컬 세션</div>', unsafe_allow_html=True)
     return page
 
 
@@ -591,10 +591,9 @@ def render_system_intro():
             "분석 이력 및 결과에 대한 영구 저장 기능은 지원되지 않으며, QA 판단 이력은 현재 세션에서만 유지됩니다(영구적인 감사 추적 Audit Trail이 아님).",
             "브라우저 및 서버 로그의 완전한 비저장은 보장되지 않습니다.",
             "유사 Recall은 개시일 기준으로 필터링하며, 당시 정보가 실제로 공개되어 있었는지는 검증하지 않았습니다.",
-        ]) + '<div style="height:14px"></div>' + ui.subheader_icon_html("layers", "프로젝트 Root Cause 7-class", "layers")
+        ]) + '<div style="height:40px"></div>' + ui.subheader_icon_html("layers", "프로젝트 Root Cause 7-class", "layers")
             + ui.tags_html(("설계", "소프트웨어", "공정/변경관리", "자재/부품", "포장/라벨링", "인적요인", "규제/인허가")), title_icon="warning"),
     )
-    st.caption(f"{APP_VERSION} · v1(최초 설계)에서 정보구조 간소화, Human QA 판단 독립성, Retrieval 수동 평가 표시를 반영했습니다. 변경 내용은 CHANGELOG_v2.md 참고.")
 
 
 def show_recall_tab():
@@ -631,7 +630,7 @@ def main():
                         st.caption(f"유사 Recall {n_items}건이 검색되었습니다. 사례와 근거는 ‘과거 사례·근거’ 탭에서 확인하세요.")
                     with st.container(horizontal=True, horizontal_alignment="right"):
                         st.button("과거 사례·근거 보기", key="d21_recall_jump", on_click=show_recall_tab, type="tertiary")
-                render_confidence_validation()
+                    render_confidence_validation()
             with tabs[1]:  # 과거 사례·근거
                 render_retrieval_tab(result["retrieval"] if result else None)
                 render_retrieval_manual_review()

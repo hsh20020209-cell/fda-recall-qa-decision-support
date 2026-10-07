@@ -110,6 +110,24 @@ button[kind="primary"] {background:var(--qa-blue); border-color:var(--qa-blue); 
 .qa-tags span {background:#EEF1FF; border-radius:20px; color:#4963C9; padding:6px 11px; font-size:12px;}
 .st-key-shell_ai_reference {background:#F0F4FF!important;}
 @media(max-width:1050px) {.qa-intro-grid {grid-template-columns:1fr;}}
+/* ---- 시스템 소개 글자·아이콘 크기 조정 (v2.1) ---- */
+.qa-intro-panel .qa-step {gap:16px; padding:13px 0;}
+.qa-intro-panel .qa-step .qa-step-number {min-width:38px; height:38px; font-size:16px;}
+.qa-intro-panel .qa-step strong {font-size:18px;}
+.qa-intro-panel .qa-step p {font-size:15.5px; line-height:1.65; margin:6px 0 0;}
+.qa-workflow-step {gap:10px; padding:3px 0;}
+.qa-workflow-step .qa-step-number {min-width:24px; height:24px; font-size:12px;}
+.qa-workflow-step .qa-icon {width:30px; height:30px; border-radius:7px;}
+.qa-workflow-step .qa-icon svg {width:16px; height:16px;}
+.qa-workflow-step strong {font-size:13px;}
+.qa-workflow-step p {font-size:12px; line-height:1.45; margin:1px 0 0;}
+.qa-intro-panel .qa-limit-row {font-size:15.5px; line-height:1.65; padding:11px 0; gap:13px;}
+.qa-intro-panel .qa-limit-number {width:28px; height:28px; font-size:14px;}
+.qa-intro-panel .qa-subheader-icon {font-size:19px; gap:10px;}
+.qa-intro-panel .qa-subheader-icon svg {width:22px; height:22px;}
+.qa-intro-panel .qa-tags {gap:10px; padding-top:12px;}
+.qa-intro-panel .qa-tags span {font-size:14.5px; padding:8px 15px;}
+
 @media(max-width:1050px) {.qa-summary-grid {grid-template-columns:repeat(2,minmax(0,1fr));} .qa-detail-row {grid-template-columns:60px 100px 70px 1fr;} .qa-detail-row .qa-snippet {grid-column:1/-1;}}
 @media(max-width:700px) {[data-testid="stMainBlockContainer"] {padding:4.5rem 1rem 1rem;} .qa-summary-grid,.qa-summary-grid.three {grid-template-columns:1fr;} .qa-preview th:nth-child(2) {width:70px;} .qa-summary {min-height:90px;}}
 </style>
