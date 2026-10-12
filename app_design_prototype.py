@@ -119,6 +119,8 @@ def analyze_input():
             "Event ID": st.session_state.get("d21_event", ""),
         }
     except Exception:
+        import traceback
+        traceback.print_exc()  # 원인은 서버 로그(Manage app > Logs)에 남긴다
         st.session_state.pop("d21_result", None)
         st.session_state["d21_error"] = "분석 Runtime을 사용할 수 없습니다. 환경 및 Artifact 확인이 필요합니다."
 
