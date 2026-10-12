@@ -153,9 +153,18 @@ class FinalV3RecallRetriever:
             raise ValueError("Embedding/Event ID/metadata alignment check failed.")
 
         self.embedding_model_name = self.config["embedding_model"]
-        self._encoder = SentenceTransformer(
-            self.embedding_model_name, local_files_only=local_files_only
-        )
+        try:
+            self._encoder = SentenceTransformer(
+                self.embedding_model_name, local_files_only=local_files_only
+            )
+        except Exception:
+            # 오프라인 우선(local_files_only=True) 정책은 유지하되, 로컬 캐시에 모델이 없는 환경
+            # (예: Streamlit Community Cloud 첫 실행)에서는 한 번만 내려받아 사용한다.
+            if not local_files_only:
+                raise
+            self._encoder = SentenceTransformer(
+                self.embedding_model_name, local_files_only=False
+            )
         self.default_k = int(self.config["default_k"])
         self.max_k = int(self.config["max_k"])
 
